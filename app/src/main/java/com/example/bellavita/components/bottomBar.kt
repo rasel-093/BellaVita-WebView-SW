@@ -8,7 +8,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.navOptions
 import com.example.bellavita.data.NavigationItems
 
 @Composable
@@ -27,7 +29,14 @@ fun bottomBar(navController: NavController){
             NavigationBarItem(
                 selected = currentRoute == navItem.route,
                 onClick = {
-                    navController.navigate(navItem.route)
+                    navController.navigate(route = navItem.route, navOptions = navOptions {
+                        //Limit backStack
+                        popUpTo(navController.graph.findStartDestination().id){
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    })
                     //topTitle = navItem.title
                 },
                 label = {
